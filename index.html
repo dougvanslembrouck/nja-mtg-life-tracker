@@ -81,11 +81,34 @@
       overflow: hidden;
     }
 
-    /* Fantasy Element Theme Color Backdrops */
-    .theme-arcane  { background-color: #171228; } /* Mystic Purple */
-    .theme-inferno { background-color: #240f0f; } /* Ash & Volcanic Red */
-    .theme-forest  { background-color: #0c2014; } /* Deep Pine Green */
-    .theme-shadow  { background-color: #131518; } /* Obsidian Dark */
+    /* Fantasy Element Theme Backdrops: land art under a tinted scrim for legibility.
+       The color stays as a fallback if an image is missing. */
+    .player-card[class*="theme-"] {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .theme-arcane {  /* Plains */
+      background-color: #171228;
+      background-image: linear-gradient(rgba(23, 18, 40, 0.55), rgba(10, 8, 20, 0.82)), url("plains.png");
+    }
+    .theme-inferno { /* Mountain */
+      background-color: #240f0f;
+      background-image: linear-gradient(rgba(36, 15, 15, 0.45), rgba(15, 6, 6, 0.8)), url("mountain.png");
+    }
+    .theme-forest {  /* Forest */
+      background-color: #0c2014;
+      background-image: linear-gradient(rgba(12, 32, 20, 0.45), rgba(5, 14, 8, 0.8)), url("forest-cropped.png");
+    }
+    .theme-shadow {  /* Swamp */
+      background-color: #131518;
+      background-image: linear-gradient(rgba(19, 21, 24, 0.4), rgba(8, 9, 11, 0.8)), url("swamp.png");
+    }
+
+    /* Keep text crisp on top of artwork */
+    .life-val { text-shadow: 0 3px 18px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 0.9); }
+    .player-name-input { text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9); }
+    .cmd-row { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
 
     .card-header {
       display: flex;
@@ -183,7 +206,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.4);
       padding: 0.35rem 0.75rem;
       border-radius: 6px;
       border-left: 4px solid transparent;
@@ -218,7 +241,7 @@
     .cmd-row.lethal-warning { background-color: rgba(244, 63, 94, 0.25); border-color: var(--lethal-red); }
     .cmd-row.lethal-warning .cmd-damage-val { color: var(--lethal-red); animation: heartBeat 1.5s infinite; }
 
-    .player-card.is-eliminated { background-color: var(--dead-grey) !important; opacity: 0.35; }
+    .player-card.is-eliminated { background-color: var(--dead-grey) !important; opacity: 0.35; filter: grayscale(1); }
     .player-card.is-eliminated .life-btn,
     .player-card.is-eliminated .cmd-sub-btn,
     .player-card.is-eliminated .player-name-input { pointer-events: none; opacity: 0.2; }
