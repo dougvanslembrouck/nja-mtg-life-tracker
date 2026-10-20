@@ -110,6 +110,122 @@
     .player-name-input { text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9); }
     .cmd-row { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
 
+    /* ===== COMMANDER ART BACKGROUNDS ===== */
+    .theme-arcane  { --tint: 23, 18, 40; }
+    .theme-inferno { --tint: 36, 15, 15; }
+    .theme-forest  { --tint: 12, 32, 20; }
+    .theme-shadow  { --tint: 19, 21, 24; }
+    .player-card.has-art {
+      background-image: linear-gradient(rgba(var(--tint), 0.45), rgba(8, 8, 12, 0.82)), var(--art);
+    }
+
+    .commander-line {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+      z-index: 5;
+      min-width: 0;
+    }
+    .commander-pick-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .commander-pick-btn .cp-label { overflow: hidden; text-overflow: ellipsis; }
+    .commander-pick-btn .cp-caret { opacity: 0.6; flex-shrink: 0; }
+    .art-credit {
+      flex: 1 1 0;        /* only takes space the commander name leaves free */
+      min-width: 0;
+      font-size: 0.62rem;
+      color: rgba(255, 255, 255, 0.55);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .commander-picker {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      background: rgba(9, 10, 14, 0.96);
+      display: none;
+      flex-direction: column;
+      padding: 0.85rem;
+      gap: 0.6rem;
+    }
+    .commander-picker.open { display: flex; }
+    .picker-top { display: flex; gap: 0.5rem; }
+    .picker-search {
+      flex: 1;
+      min-width: 0;
+      background: #171a23;
+      border: 1px solid #2a3142;
+      color: #fff;
+      font-size: 1rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 10px;
+      outline: none;
+    }
+    .picker-search:focus { border-color: var(--accent-blue); }
+    .picker-close {
+      background: #fff;
+      color: #000;
+      border: none;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      padding: 0 0.9rem;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .picker-results {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .picker-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      text-align: left;
+      background: #141822;
+      border: 1px solid transparent;
+      color: #fff;
+      font-size: 0.88rem;
+      padding: 0.6rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .picker-item:active, .picker-item.selected { border-color: var(--accent-blue); }
+    .picker-item.land-option { color: var(--text-muted); font-style: italic; }
+    .picker-hint { color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 0.75rem 0; }
+    .pips { display: inline-flex; gap: 3px; flex-shrink: 0; }
+    .pip { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.5); }
+    .pip-W { background: #f8f1d4; } .pip-U { background: #4a90d9; } .pip-B { background: #6b5b73; }
+    .pip-R { background: #e0533d; } .pip-G { background: #3f9e5a; } .pip-C { background: #b9b4ae; }
+    .log-commander { color: var(--text-muted); font-size: 0.75rem; font-weight: 400; }
+
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -245,6 +361,95 @@
     .player-card.is-eliminated .life-btn,
     .player-card.is-eliminated .cmd-sub-btn,
     .player-card.is-eliminated .player-name-input { pointer-events: none; opacity: 0.2; }
+    /* ===== MONARCH ===== */
+    .header-actions { display: flex; align-items: center; gap: 0.45rem; }
+    .monarch-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.35);
+      color: rgba(255, 255, 255, 0.45);
+      cursor: pointer;
+      z-index: 10;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    .monarch-btn svg { width: 18px; height: 18px; }
+    .player-card.is-monarch .monarch-btn {
+      color: #1a1404;
+      background: #f5c542;
+      border-color: #ffe08a;
+      box-shadow: 0 0 14px rgba(245, 197, 66, 0.7);
+    }
+    .player-card.is-monarch {
+      box-shadow: inset 0 0 0 3px rgba(245, 197, 66, 0.9), inset 0 0 48px rgba(245, 197, 66, 0.25);
+    }
+    .player-card.is-eliminated .monarch-btn { pointer-events: none; opacity: 0.2; }
+    .log-monarch { color: #f5c542; font-size: 0.75rem; }
+
+    /* ===== COMMANDER TAX ===== */
+    .tax-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      flex-shrink: 0;
+      margin-left: auto;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 0.15rem 0.2rem;
+    }
+    .tax-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding-left: 0.2rem;
+    }
+    .tax-val {
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      min-width: 1.1rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .tax-control.has-tax { border-color: rgba(245, 158, 11, 0.55); }
+    .tax-control.has-tax .tax-val { color: var(--accent-amber); }
+    .tax-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tax-btn:active { background: rgba(255, 255, 255, 0.25); }
+    .player-card.is-eliminated .tax-btn { pointer-events: none; opacity: 0.2; }
+    .log-tax { color: var(--accent-amber); font-size: 0.72rem; font-weight: 400; }
+
+    /* Narrow cards (phone in 4P): commander button gets its own row, tax drops below it */
+    .player-card { container-type: inline-size; }
+    @container (max-width: 300px) {
+      .commander-line { flex-wrap: wrap; row-gap: 0.35rem; }
+      .commander-pick-btn { flex: 1 1 100%; justify-content: space-between; }
+      .art-credit { display: none; }
+      .tax-control { margin-left: 0; }
+    }
+
     .player-card.is-eliminated .dead-btn { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); color: #ffffff; }
 
     /* ===== INTERACTIVE CONTROL OVERLAYS & HUD SYSTEM ===== */
@@ -506,6 +711,8 @@
   <!-- Invisible system handling node targeting system local storage uploads -->
   <input type="file" id="import-hook" accept=".json" onchange="importLogDatabase(event)" />
 
+  <!-- Bundled commander list (regenerate with tools/update-commanders.html) -->
+  <script src="commanders.js"></script>
   <script>
     // System Active Global States
     let activeLayoutMode = 'mode-4p';
@@ -548,6 +755,45 @@
       }
     }
 
+    // Commander tax: {2} more each time a commander is cast from the command zone
+    const TAX_STEP = 2;
+    const playerTaxState = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+    function renderTax(playerId) {
+      const control = document.querySelector(`#p${playerId}-container .tax-control`);
+      if (!control) return;
+      const tax = playerTaxState[playerId];
+      control.querySelector('.tax-val').textContent = tax;
+      control.classList.toggle('has-tax', tax > 0);
+      control.title = tax ? `Commander cast ${tax / TAX_STEP + 1} times. Next cast costs {${tax}} more.` : 'No commander tax yet';
+    }
+
+    function modifyTax(playerId, direction) {
+      if (playerDeadState[playerId]) return;
+      playerTaxState[playerId] = Math.max(0, playerTaxState[playerId] + direction * TAX_STEP);
+      renderTax(playerId);
+    }
+
+    // Only one player can be the monarch at a time (null = nobody)
+    let monarchPlayerId = null;
+
+    function setMonarch(playerId) {
+      monarchPlayerId = playerId;
+      for (let i = 1; i <= 4; i++) {
+        const cardNode = document.getElementById(`p${i}-container`);
+        const isMonarch = i === playerId;
+        cardNode.classList.toggle('is-monarch', isMonarch);
+        const btn = cardNode.querySelector('.monarch-btn');
+        btn.setAttribute('aria-pressed', isMonarch ? 'true' : 'false');
+        btn.title = isMonarch ? 'Monarch (tap to remove)' : 'Make monarch';
+      }
+    }
+
+    function toggleMonarch(playerId) {
+      if (playerDeadState[playerId]) return;
+      setMonarch(monarchPlayerId === playerId ? null : playerId);
+    }
+
     function togglePlayerDeath(playerId) {
       const cardNode = document.getElementById(`p${playerId}-container`);
       const buttonNode = cardNode.querySelector('.dead-btn');
@@ -557,6 +803,8 @@
       if (playerDeadState[playerId]) {
         cardNode.classList.add('is-eliminated');
         buttonNode.textContent = "Undo";
+        // The crown passes on when the monarch leaves the game; tap it onto the new monarch
+        if (monarchPlayerId === playerId) setMonarch(null);
       } else {
         cardNode.classList.remove('is-eliminated');
         buttonNode.textContent = "I'm Dead";
@@ -568,7 +816,13 @@
         return;
       }
 
+      setMonarch(null);
+
       for (let i = 1; i <= 4; i++) {
+        // Reset Commander Tax
+        playerTaxState[i] = 0;
+        renderTax(i);
+
         // Reset Life
         playerLifeState[i] = 40;
         document.getElementById(`p${i}-life`).textContent = 40;
@@ -614,6 +868,9 @@
         document.getElementById('btn-set-4p').classList.add('active');
         showActiveCommanderRows([1, 2, 3, 4]);
       }
+
+      const seatCount = selectedModeClass === 'mode-2p' ? 2 : selectedModeClass === 'mode-3p' ? 3 : 4;
+      if (monarchPlayerId && monarchPlayerId > seatCount) setMonarch(null);
     }
 
     function showActiveCommanderRows(activePlayerIds) {
@@ -640,7 +897,10 @@
           id: i,
           name: pName,
           lifeLeft: playerLifeState[i],
-          isDead: playerDeadState[i]
+          isDead: playerDeadState[i],
+          isMonarch: monarchPlayerId === i,
+          commanderTax: playerTaxState[i],
+          commander: playerCommander[i] ? playerCommander[i][0] : null
         });
       }
 
@@ -686,7 +946,7 @@
         let cardElement = document.createElement('div');
         cardElement.className = 'log-card';
         
-        let metaLine = `<div class="log-meta"><span>${match.mode}</span><span>${match.timestamp}</span></div>`;
+        let metaLine = `<div class="log-meta"><span>${escapeHtml(match.mode)}</span><span>${escapeHtml(match.timestamp)}</span></div>`;
         let lineageHtml = `<div class="log-lineup">`;
 
         match.players.forEach(p => {
@@ -695,7 +955,7 @@
           
           lineageHtml += `
             <div class="log-row-player ${statusClass}">
-              <span>${p.name}</span>
+              <span>${p.isMonarch ? '<span class="log-monarch" title="Monarch">♛</span> ' : ''}${escapeHtml(p.name)}${p.commander ? ` <span class="log-commander">· ${escapeHtml(p.commander)}</span>` : ''}${p.commanderTax ? ` <span class="log-tax">· tax ${p.commanderTax}</span>` : ''}</span>
               <span>${statusText}</span>
             </div>`;
         });
@@ -778,6 +1038,217 @@
         });
       });
     });
+
+    /* ===== MONARCH TOGGLES ===== */
+    const CROWN_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 11H5L3 7zm2 13h14v2H5v-2z"/></svg>';
+    for (let id = 1; id <= 4; id++) {
+      const header = document.querySelector(`#p${id}-container .card-header`);
+      const deadBtn = header.querySelector('.dead-btn');
+      const actions = document.createElement('div');
+      actions.className = 'header-actions';
+      const crown = document.createElement('button');
+      crown.className = 'monarch-btn';
+      crown.type = 'button';
+      crown.innerHTML = CROWN_SVG;
+      crown.setAttribute('aria-label', 'Monarch');
+      crown.addEventListener('click', () => toggleMonarch(id));
+      header.insertBefore(actions, deadBtn);
+      actions.append(crown, deadBtn);
+    }
+    setMonarch(null);
+
+    /* ===== COMMANDER ART PICKER ===== */
+
+    // playerCommander[id] = [name, scryfallId, artist, colorIdentity] or null (land background)
+    const playerCommander = { 1: null, 2: null, 3: null, 4: null };
+    const COMMANDER_STORE_KEY = 'edh_player_commanders';
+    const COMMANDER_LIST = (window.COMMANDERS && Array.isArray(window.COMMANDERS.cards)) ? window.COMMANDERS.cards : [];
+    const MAX_RESULTS = 40;
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+      ));
+    }
+
+    function normalizeText(text) {
+      return text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/['’]/g, '')          // T'Challa -> tchalla, Sauron's -> saurons
+        .replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+
+    // Search index: every word of the name, so "panther" or "black pan" both find T'Challa
+    const commanderIndex = COMMANDER_LIST.map(card => {
+      const norm = normalizeText(card[0]);
+      return { card, norm, words: norm.split(' ') };
+    });
+    const commanderByName = new Map(COMMANDER_LIST.map(card => [card[0], card]));
+
+    function searchCommanders(query) {
+      const q = normalizeText(query);
+      if (!q) return [];
+      const terms = q.split(' ');
+      const hits = [];
+      for (const entry of commanderIndex) {
+        // Every typed word must be the start of some word in the name (no mid-word matches)
+        if (!terms.every(t => entry.words.some(w => w.startsWith(t)))) continue;
+        const rank = entry.norm.startsWith(q) ? 0 : 1;
+        hits.push({ entry, rank });
+      }
+      hits.sort((a, b) => a.rank - b.rank || a.entry.norm.localeCompare(b.entry.norm));
+      return hits.map(h => h.entry.card);
+    }
+
+    function artCropUrl(scryfallId) {
+      return `https://cards.scryfall.io/art_crop/front/${scryfallId[0]}/${scryfallId[1]}/${scryfallId}.jpg`;
+    }
+
+    function pipsHtml(colorIdentity) {
+      const colors = colorIdentity ? colorIdentity.split('') : ['C'];
+      return `<span class="pips">${colors.map(c => `<span class="pip pip-${c}"></span>`).join('')}</span>`;
+    }
+
+    function saveCommanderChoices() {
+      try {
+        const names = {};
+        for (const id in playerCommander) names[id] = playerCommander[id] ? playerCommander[id][0] : null;
+        localStorage.setItem(COMMANDER_STORE_KEY, JSON.stringify(names));
+      } catch (e) { /* storage unavailable; choices just won't persist */ }
+    }
+
+    function setPlayerCommander(playerId, card) {
+      const cardNode = document.getElementById(`p${playerId}-container`);
+      const label = cardNode.querySelector('.commander-pick-btn .cp-label');
+      const credit = cardNode.querySelector('.art-credit');
+      playerCommander[playerId] = card || null;
+
+      if (!card) {
+        cardNode.classList.remove('has-art');
+        cardNode.style.removeProperty('--art');
+        label.textContent = 'Choose commander';
+        credit.textContent = '';
+        saveCommanderChoices();
+        return;
+      }
+
+      label.textContent = card[0];
+      credit.textContent = card[2] ? `Art: ${card[2]}` : '';
+      const url = artCropUrl(card[1]);
+      const probe = new Image();
+      probe.onload = () => {
+        if (playerCommander[playerId] !== card) return; // a newer pick won
+        cardNode.style.setProperty('--art', `url("${url}")`);
+        cardNode.classList.add('has-art');
+      };
+      probe.onerror = () => {
+        // Offline or image missing: keep the land background, keep the commander name
+        if (playerCommander[playerId] !== card) return;
+        cardNode.classList.remove('has-art');
+        credit.textContent = 'Art unavailable offline';
+      };
+      probe.src = url;
+      saveCommanderChoices();
+    }
+
+    function renderPickerResults(playerId) {
+      const picker = document.getElementById(`p${playerId}-picker`);
+      const query = picker.querySelector('.picker-search').value;
+      const list = picker.querySelector('.picker-results');
+      const current = playerCommander[playerId];
+      let html = `<button class="picker-item land-option" data-pick="">Use land background</button>`;
+
+      if (!COMMANDER_LIST.length) {
+        list.innerHTML = html + `<div class="picker-hint">Commander list not found. Make sure commanders.js is next to index.html.</div>`;
+        return;
+      }
+      if (!normalizeText(query)) {
+        list.innerHTML = html + `<div class="picker-hint">Start typing a commander's name<br>${COMMANDER_LIST.length.toLocaleString()} commanders · updated ${escapeHtml(window.COMMANDERS.updated || '')}</div>`;
+        return;
+      }
+
+      const results = searchCommanders(query);
+      html += results.slice(0, MAX_RESULTS).map(card => `
+        <button class="picker-item${current && current[0] === card[0] ? ' selected' : ''}" data-pick="${escapeHtml(card[0])}">
+          <span>${escapeHtml(card[0])}</span>${pipsHtml(card[3])}
+        </button>`).join('');
+      if (!results.length) html += `<div class="picker-hint">No commanders match "${escapeHtml(query)}"</div>`;
+      if (results.length > MAX_RESULTS) html += `<div class="picker-hint">${results.length - MAX_RESULTS} more, keep typing to narrow it down</div>`;
+      list.innerHTML = html;
+    }
+
+    function openCommanderPicker(playerId) {
+      if (playerDeadState[playerId]) return;
+      const picker = document.getElementById(`p${playerId}-picker`);
+      const input = picker.querySelector('.picker-search');
+      input.value = '';
+      renderPickerResults(playerId);
+      picker.classList.add('open');
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeCommanderPicker(playerId) {
+      document.getElementById(`p${playerId}-picker`).classList.remove('open');
+    }
+
+    // Build the commander button, art credit and picker overlay inside each player card
+    for (let id = 1; id <= 4; id++) {
+      const cardNode = document.getElementById(`p${id}-container`);
+
+      const line = document.createElement('div');
+      line.className = 'commander-line';
+      line.innerHTML = `
+        <button class="commander-pick-btn" type="button"><span class="cp-label">Choose commander</span><span class="cp-caret">▾</span></button>
+        <span class="art-credit"></span>
+        <div class="tax-control" aria-label="Commander tax">
+          <span class="tax-label">Tax</span>
+          <button class="tax-btn" type="button" aria-label="Remove commander tax">−</button>
+          <span class="tax-val">0</span>
+          <button class="tax-btn" type="button" aria-label="Add commander tax">+</button>
+        </div>`;
+      cardNode.querySelector('.card-header').insertAdjacentElement('afterend', line);
+      line.querySelector('.commander-pick-btn').addEventListener('click', () => openCommanderPicker(id));
+      const [taxMinus, taxPlus] = line.querySelectorAll('.tax-btn');
+      taxMinus.addEventListener('click', () => modifyTax(id, -1));
+      taxPlus.addEventListener('click', () => modifyTax(id, 1));
+      renderTax(id);
+
+      const picker = document.createElement('div');
+      picker.className = 'commander-picker';
+      picker.id = `p${id}-picker`;
+      picker.innerHTML = `
+        <div class="picker-top">
+          <input class="picker-search" type="search" placeholder="Search commanders…" autocomplete="off" autocorrect="off" spellcheck="false" />
+          <button class="picker-close" type="button">Close</button>
+        </div>
+        <div class="picker-results"></div>`;
+      cardNode.appendChild(picker);
+
+      const input = picker.querySelector('.picker-search');
+      input.addEventListener('input', () => renderPickerResults(id));
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeCommanderPicker(id);
+        if (e.key === 'Enter') {
+          const first = picker.querySelector('.picker-item:not(.land-option)');
+          if (first) first.click();
+        }
+      });
+      picker.querySelector('.picker-close').addEventListener('click', () => closeCommanderPicker(id));
+      picker.querySelector('.picker-results').addEventListener('click', e => {
+        const item = e.target.closest('.picker-item');
+        if (!item) return;
+        const name = item.getAttribute('data-pick');
+        setPlayerCommander(id, name ? commanderByName.get(name) : null);
+        closeCommanderPicker(id);
+      });
+    }
+
+    // Restore each seat's last commander on this device
+    try {
+      const saved = JSON.parse(localStorage.getItem(COMMANDER_STORE_KEY) || '{}');
+      for (const id in saved) {
+        if (saved[id] && commanderByName.has(saved[id])) setPlayerCommander(Number(id), commanderByName.get(saved[id]));
+      }
+    } catch (e) { /* ignore unreadable storage */ }
   </script>
 </body>
 </html>

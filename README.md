@@ -28,10 +28,33 @@ No install, no build step, no account. Open `index.html` in a browser and play.
 - Commander damage can't go below 0.
 - Rows for empty seats are hidden in 2P and 3P modes.
 
+### Commander art
+- Tap **Choose commander** under a player's name to open a searchable list of every commander-legal card (about 3,500).
+- Type any part of the name. Each word matches the start of a word, so `tchalla`, `black pan`, and `sauron lord` all work. Color identity pips appear next to each result.
+- Picking a commander sets that seat's background to the card's art, with an **Art: _artist_** credit. **Use land background** switches back.
+- Art comes from the newest *standard* printing: available in nonfoil, not a promo, and not a showcase, extended-art, etched, or other "booster fun" variant.
+- Each seat's commander is remembered on that device and recorded in **Log Game**, so match history shows who played what.
+- Searching works offline because the list ships with the app (`commanders.js`). The art itself loads from Scryfall, so without internet the seat keeps its land background.
+
 ### Player names
 - Tap a player's name to rename them.
 - New names update automatically in every opponent's commander damage panel.
 - Clearing a name falls back to that seat's default.
+
+### Commander tax
+- Each player has a **Tax** counter next to their commander. Tap **+** each time they recast their commander from the command zone.
+- It counts in steps of 2 (0 → 2 → 4 → 6…), so the number is exactly the extra mana the next cast costs.
+- The number turns amber once a player has tax. It can't go below 0, and it locks when the player is eliminated.
+- **Reset** sets everyone back to 0, and **Log Game** records each player's final tax.
+- On narrow screens (a phone in 4P), the counter moves to its own line under the commander button.
+
+### Monarch
+- Each player card has a **crown** button next to **I'm Dead**. Tap it to make that player the monarch.
+- Only one player can be the monarch. Crowning someone takes the crown from whoever had it, and tapping the current monarch's crown removes it.
+- The monarch's card gets a gold border and a gold crown, so the whole table can see who draws the extra card.
+- If the monarch is eliminated, the crown is cleared. Tap it onto the new monarch, since the app doesn't track whose turn it is.
+- **Reset** clears the monarch, and switching to a smaller layout clears it from a seat that's no longer in play.
+- **Log Game** records who held the crown at the end, shown as ♛ in match history.
 
 ### Elimination
 - **I'm Dead** marks a player as eliminated. The card dims, and its life and commander damage controls lock.
@@ -58,12 +81,14 @@ No install, no build step, no account. Open `index.html` in a browser and play.
 
 ## Seat themes
 
-| Seat | Default name | Theme |
-|------|--------------|-------|
-| 1 | Arcane | Mystic purple |
-| 2 | Inferno | Volcanic red |
-| 3 | Forest | Deep pine green |
-| 4 | Shadow | Obsidian grey |
+Each seat uses basic-land artwork as its background, under a tinted scrim so life totals stay readable. Eliminated players' art turns greyscale.
+
+| Seat | Default name | Background | Tint |
+|------|--------------|------------|------|
+| 1 | Arcane | Plains | Mystic purple |
+| 2 | Inferno | Mountain | Volcanic red |
+| 3 | Forest | Forest | Deep pine green |
+| 4 | Shadow | Swamp | Obsidian grey |
 
 ---
 
@@ -86,6 +111,14 @@ The page disables pinch-zoom and text selection so stray touches during play don
 
 ---
 
+## Updating the commander list
+
+When a new set comes out:
+
+1. Open `tools/update-commanders.html` in your browser and click **Build list**. It takes about a minute.
+2. Your browser downloads a new `commanders.js`.
+3. Move it into the app folder, replacing the old one.
+
 ## Match history data format
 
 Exported files are a JSON array of match records:
@@ -97,7 +130,7 @@ Exported files are a JSON array of match records:
     "timestamp": "10/19/2026, 2:08:00 PM",
     "mode": "4 Players",
     "players": [
-      { "id": 1, "name": "Arcane",  "lifeLeft": 12, "isDead": false },
+      { "id": 1, "name": "Arcane",  "lifeLeft": 12, "isDead": false, "isMonarch": true, "commanderTax": 4, "commander": "T'Challa, the Black Panther" },
       { "id": 2, "name": "Inferno", "lifeLeft": 0,  "isDead": true  },
       { "id": 3, "name": "Forest",  "lifeLeft": -3, "isDead": true  },
       { "id": 4, "name": "Shadow",  "lifeLeft": 5,  "isDead": true  }
@@ -112,7 +145,7 @@ Exported files are a JSON array of match records:
 | `id` | Unique ID built from the save time in milliseconds |
 | `timestamp` | Human-readable local date and time the game was logged |
 | `mode` | `"2 Players"`, `"3 Players"`, or `"4 Players"` |
-| `players` | One entry per active seat: seat `id`, `name`, final `lifeLeft`, and `isDead` |
+| `players` | One entry per active seat: seat `id`, `name`, final `lifeLeft`, `isDead`, `isMonarch`, `commanderTax`, and `commander` (name, or `null` for land background; missing in games logged before this feature) |
 | `winners` | Array of winning seat IDs (more than one on a tie) |
 
 ---
@@ -121,11 +154,21 @@ Exported files are a JSON array of match records:
 
 ```
 .
-├── index.html   # The entire app: markup, styles, and script
+├── index.html          # The entire app: markup, styles, and script
+├── plains.png          # Arcane background
+├── mountain.png        # Inferno background
+├── forest-cropped.png  # Forest background (letterbox bars removed)
+├── forest.png          # Original forest art
+├── swamp.png           # Shadow background
+├── commanders.js       # Bundled commander list (name, Scryfall id, artist, color identity)
+├── tools/
+│   └── update-commanders.html  # Rebuilds commanders.js from Scryfall
 └── README.md
 ```
 
-Everything lives in one HTML file: inline CSS for layout and theming, and vanilla JavaScript for state, commander damage logic, and the history engine. No frameworks, no external requests.
+Keep the images in the same folder as `index.html`. If an image is missing, that seat falls back to its solid theme color.
+
+All the logic lives in one HTML file: inline CSS for layout and theming, and vanilla JavaScript for state, commander damage logic, and the history engine. No frameworks, no external requests.
 
 ---
 
@@ -136,7 +179,7 @@ These are worth knowing about before a game night, and are good candidates for f
 - **In-progress games aren't saved.** Only logged games persist. Refreshing or closing the page mid-game resets life totals, commander damage, and names.
 - **Winner edge case.** The highest-life check compares against *all* players, including eliminated ones. If an eliminated player has a higher life total than every survivor (for example, someone killed by 21 commander damage while at high life), no winner is recorded unless only one player is left alive. Marking everyone else dead before logging avoids this.
 - **21 commander damage doesn't auto-eliminate.** The row shows the lethal warning, but the player still needs to tap **I'm Dead**.
-- **One commander per opponent.** There's no separate tracking for partner commanders or backgrounds.
+- **One commander per player.** Partner commanders and backgrounds don't get separate commander damage rows, art, or tax counters yet.
 - **No other counters.** Poison, commander tax, energy, and similar counters aren't tracked yet.
 - **Switching layouts doesn't reset.** Hidden seats keep their state, and only the active seats are included when a game is logged.
 - **Import doesn't de-duplicate.** Importing the same file twice adds those games twice.
@@ -149,9 +192,11 @@ These are worth knowing about before a game night, and are good candidates for f
 - Persist the in-progress game across refreshes
 - Auto-eliminate at 21 commander damage or 0 life (optional toggle)
 - Partner commander rows
-- Poison and commander tax counters
+- Poison counters
+- Initiative / Undercity tracker (works like the monarch toggle)
 - Turn tracker and game timer
-- Win-rate and stats view built from match history
+- Win-rate and stats view built from match history (per player and per commander)
+- Partner and background pairs in the commander picker
 - Configurable starting life (e.g. 20 for duels, 30 for Brawl)
 
 ---
@@ -165,5 +210,7 @@ Issues and pull requests are welcome. Because the app is one file, the easiest w
 Add a license of your choice (MIT is a common pick for small projects like this).
 
 ---
+
+*Card data and art crops are provided by [Scryfall](https://scryfall.com). Card art is credited to its artists and is copyright Wizards of the Coast. This project is free and unofficial, as permitted by the [Wizards of the Coast Fan Content Policy](https://company.wizards.com/en/legal/fancontentpolicy).*
 
 *Magic: The Gathering is a trademark of Wizards of the Coast LLC. This project is fan-made and isn't affiliated with or endorsed by Wizards of the Coast.*
