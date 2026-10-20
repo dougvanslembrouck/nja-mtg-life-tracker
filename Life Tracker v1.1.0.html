@@ -1,0 +1,320 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Life Tracker v1.1.0</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: one reading column; each feature is a "card" whose right side shows the real control it adds. */
+  :root {
+    --bg: #0d0f14;
+    --surface: #151922;
+    --surface-2: #1c2130;
+    --line: #262c3b;
+    --fg: #eef0f4;
+    --muted: #8f9aab;
+    --gold: #f5c542;
+    --gold-ink: #1a1404;
+    --amber: #f59e0b;
+    --blue: #7fb0f5;
+    --code-bg: #0a0c10;
+    --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+    --font-body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f4f2ee; --surface: #ffffff; --surface-2: #eeebe4; --line: #ddd8cd;
+      --fg: #1b1d22; --muted: #5d6573; --gold: #c99a14; --gold-ink: #1a1404;
+      --amber: #b86e00; --blue: #2d64b8; --code-bg: #f7f5f0; color-scheme: light;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f2ee; --surface: #ffffff; --surface-2: #eeebe4; --line: #ddd8cd;
+    --fg: #1b1d22; --muted: #5d6573; --gold: #c99a14; --gold-ink: #1a1404;
+    --amber: #b86e00; --blue: #2d64b8; --code-bg: #f7f5f0; color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 1.08rem;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-block: 3rem 4rem;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  /* Header */
+  .release-head { display: flex; flex-direction: column; gap: 0.75rem; }
+  .release-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted);
+  }
+  .tag {
+    font-family: var(--font-mono); font-weight: 600; font-size: 0.78rem;
+    color: var(--gold-ink); background: var(--gold);
+    padding: 0.15rem 0.55rem; border-radius: 4px;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 3rem);
+    line-height: 1.1;
+    margin: 0;
+    text-wrap: balance;
+    letter-spacing: 0.01em;
+  }
+  .lede { color: var(--muted); margin: 0; max-width: 60ch; font-size: 1.15rem; }
+
+  /* Feature cards */
+  .features { display: flex; flex-direction: column; gap: 1rem; }
+  .feature {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 13rem;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .feature h2 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    margin: 0 0 0.4rem;
+    letter-spacing: 0.02em;
+  }
+  .feature p { margin: 0 0 0.75rem; }
+  .feature ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; }
+  .feature li::marker { color: var(--muted); }
+  .feature-body { min-width: 0; }
+
+  /* Replicas of the in-app controls */
+  .demo {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+  .demo-label {
+    font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--muted);
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    border: 1px solid var(--line); background: var(--surface);
+    border-radius: 999px; padding: 0.3rem 0.7rem; font-size: 0.85rem; font-weight: 500;
+    max-width: 100%;
+  }
+  .pill .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .caret { color: var(--muted); font-size: 0.75rem; }
+  .credit { font-size: 0.75rem; color: var(--muted); }
+  .pips { display: inline-flex; gap: 3px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.35); }
+  .pip.W { background: #f8f1d4; } .pip.U { background: #4a90d9; } .pip.B { background: #6b5b73; }
+  .pip.R { background: #e0533d; } .pip.G { background: #3f9e5a; }
+  .result-row {
+    display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+    width: 100%; font-size: 0.82rem; background: var(--surface); border-radius: 6px;
+    padding: 0.35rem 0.55rem; border: 1px solid var(--line);
+  }
+  .search-box {
+    width: 100%; font-family: var(--font-mono); font-size: 0.8rem;
+    border: 1px solid var(--blue); border-radius: 6px; padding: 0.35rem 0.55rem;
+    background: var(--surface);
+  }
+
+  .crown-row { display: flex; gap: 0.6rem; align-items: center; }
+  .crown {
+    width: 40px; height: 32px; border-radius: 7px; display: inline-flex;
+    align-items: center; justify-content: center; border: 1px solid var(--line);
+    color: var(--muted); background: var(--surface);
+  }
+  .crown.on {
+    background: var(--gold); color: var(--gold-ink); border-color: var(--gold);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--gold) 60%, transparent);
+  }
+  .crown svg { width: 20px; height: 20px; }
+  .crown-card {
+    width: 100%; border-radius: 8px; padding: 0.5rem 0.65rem; font-size: 0.8rem;
+    border: 2px solid var(--gold); color: var(--fg); background: var(--surface);
+  }
+
+  .tax {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    border: 1px solid var(--amber); border-radius: 999px; padding: 0.2rem 0.3rem 0.2rem 0.6rem;
+    background: var(--surface);
+  }
+  .tax-label { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; color: var(--muted); }
+  .tax-btn {
+    width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line);
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
+  }
+  .tax-val { font-family: var(--font-mono); font-weight: 600; color: var(--amber); min-width: 1.1rem; text-align: center; }
+  .mana-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: var(--muted); }
+  .mana {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #cac5c0; color: #111; font-family: var(--font-mono); font-weight: 600; font-size: 0.72rem;
+    border: 1px solid rgba(0,0,0,0.3);
+  }
+
+  /* Secondary sections */
+  section > h2 {
+    font-family: var(--font-display); font-size: 1.15rem; letter-spacing: 0.04em;
+    margin: 0 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--line);
+  }
+  section ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.35rem; }
+  section p { margin: 0 0 0.75rem; max-width: 65ch; }
+  .files { display: grid; gap: 0.5rem; margin: 0.25rem 0 0.75rem; }
+  .file {
+    display: grid; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); gap: 0.25rem 1rem;
+    padding: 0.6rem 0.8rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  }
+  .file .note { color: var(--muted); font-size: 0.95rem; }
+  code { font-family: var(--font-mono); font-size: 0.85em; }
+  .file code { color: var(--blue); overflow-wrap: anywhere; }
+  .code-wrap { overflow-x: auto; background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; }
+  pre { margin: 0; padding: 1rem; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55; }
+  .k { color: var(--blue); } .s { color: var(--amber); } .new { color: var(--gold); font-weight: 600; }
+
+  footer { color: var(--muted); font-size: 0.88rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
+  footer a { color: var(--blue); }
+
+  @media (max-width: 640px) {
+    .feature { grid-template-columns: minmax(0, 1fr); }
+    .file { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
+
+<main class="page">
+  <header class="release-head">
+    <div class="release-meta">
+      <span class="tag">v1.1.0</span>
+      <span>EDH Pod Life Tracker</span>
+      <span>·</span>
+      <time datetime="2026-10-20">October 20, 2026</time>
+    </div>
+    <h1>Commanders, Crowns &amp; Tax</h1>
+    <p class="lede">Three new features to make the tracker feel like your table: your commander's art behind your life total, a crown for the monarch, and a counter for commander tax.</p>
+  </header>
+
+  <div class="features">
+    <article class="feature">
+      <div class="feature-body">
+        <h2>Commander art backgrounds</h2>
+        <p>Tap <strong>Choose commander</strong> under any player's name and search about 3,500 commander-legal cards. Pick one, and that seat's background becomes the card's art, with the artist credited.</p>
+        <ul>
+          <li>Search by any part of the name: <code>tchalla</code>, <code>black pan</code> and <code>sauron lord</code> all work</li>
+          <li>Color identity pips next to every result</li>
+          <li>Art comes from the newest standard printing, skipping promos and showcase, extended-art or etched versions</li>
+          <li>Each seat remembers its commander on your device, and <strong>Log Game</strong> records who played what</li>
+          <li>Search works offline. Without internet, the seat keeps its land background</li>
+          <li><strong>Use land background</strong> switches back anytime</li>
+        </ul>
+      </div>
+      <div class="demo" aria-hidden="true">
+        <span class="demo-label">In the app</span>
+        <span class="search-box">black pan</span>
+        <span class="result-row"><span>T'Challa, the Black Panther</span><span class="pips"><span class="pip W"></span><span class="pip G"></span></span></span>
+        <span class="pill"><span class="name">T'Challa, the Black Panther</span><span class="caret">▾</span></span>
+        <span class="credit">Art: Eli Minaya</span>
+      </div>
+    </article>
+
+    <article class="feature">
+      <div class="feature-body">
+        <h2>Monarch</h2>
+        <p>A crown button sits next to <strong>I'm Dead</strong> on every player card, so the whole table can see who draws the extra card at end of turn.</p>
+        <ul>
+          <li>Tap to crown a player. Their card gets a gold border and a gold crown</li>
+          <li>Only one monarch at a time, so crowning someone takes it from whoever had it</li>
+          <li>An eliminated monarch loses the crown. Tap it onto the new monarch</li>
+          <li>Match history marks the game's final monarch with ♛</li>
+        </ul>
+      </div>
+      <div class="demo" aria-hidden="true">
+        <span class="demo-label">In the app</span>
+        <div class="crown-row">
+          <span class="crown on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 11H5L3 7zm2 13h14v2H5v-2z"/></svg></span>
+          <span class="crown"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 11H5L3 7zm2 13h14v2H5v-2z"/></svg></span>
+        </div>
+        <span class="crown-card">♛ Arcane is the monarch</span>
+      </div>
+    </article>
+
+    <article class="feature">
+      <div class="feature-body">
+        <h2>Commander tax</h2>
+        <p>Each player now has a <strong>Tax</strong> counter beside their commander. Tap <strong>+</strong> every time the commander is cast again from the command zone.</p>
+        <ul>
+          <li>Counts in steps of 2, so the number is exactly the extra mana the next cast costs</li>
+          <li>Turns amber once a player has tax, and can't go below 0</li>
+          <li>Resets with the game and is saved in match history</li>
+        </ul>
+      </div>
+      <div class="demo" aria-hidden="true">
+        <span class="demo-label">In the app</span>
+        <span class="tax"><span class="tax-label">TAX</span><span class="tax-btn">−</span><span class="tax-val">4</span><span class="tax-btn">+</span></span>
+        <span class="mana-steps">Third cast costs <span class="mana">4</span> more</span>
+        <span class="mana-steps"><span class="mana">0</span>→<span class="mana">2</span>→<span class="mana">4</span>→<span class="mana">6</span></span>
+      </div>
+    </article>
+  </div>
+
+  <section>
+    <h2>Also in this release</h2>
+    <ul>
+      <li>Match history now shows each player's commander, the monarch and commander tax</li>
+      <li>Player names in match history are now displayed safely, so special characters can't break the page</li>
+      <li>On phones in 4-player mode, the commander button and tax counter stack so neither gets cut off</li>
+      <li>New <code>tools/update-commanders.html</code> rebuilds the commander list from Scryfall when new sets release</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Upgrading</h2>
+    <p>Replace <code>index.html</code> and add these new files next to it:</p>
+    <div class="files">
+      <div class="file"><code>commanders.js</code><span class="note">The bundled commander list</span></div>
+      <div class="file"><code>tools/update-commanders.html</code><span class="note">Rebuilds the list when new sets come out</span></div>
+    </div>
+    <p>Your existing match history carries over. Older games just won't show a commander, monarch or tax.</p>
+  </section>
+
+  <section>
+    <h2>Data format</h2>
+    <p>Each player in exported match history now includes three new fields, highlighted below.</p>
+    <div class="code-wrap">
+<pre>{
+  <span class="k">"id"</span>: 1,
+  <span class="k">"name"</span>: <span class="s">"Arcane"</span>,
+  <span class="k">"lifeLeft"</span>: 12,
+  <span class="k">"isDead"</span>: false,
+  <span class="new">"isMonarch"</span>: true,
+  <span class="new">"commanderTax"</span>: 4,
+  <span class="new">"commander"</span>: <span class="s">"T'Challa, the Black Panther"</span>
+}</pre>
+    </div>
+  </section>
+
+  <footer>
+    Card data and art via <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a>. Card art © Wizards of the Coast, credited to each artist. Unofficial fan content under the <a href="https://company.wizards.com/en/legal/fancontentpolicy" target="_blank" rel="noopener">Wizards of the Coast Fan Content Policy</a>.
+  </footer>
+</main>
+
+</body></html>
