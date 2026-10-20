@@ -1,0 +1,48 @@
+# v1.1.0: Commanders, Crowns & Tax
+
+Three new features to make the tracker feel like *your* table.
+
+## 🎨 Commander art backgrounds
+Tap **Choose commander** under any player's name and search all ~3,500 commander-legal cards. Pick one, and that seat's background becomes the card's art, with the artist credited.
+
+- Search by any part of the name: `tchalla`, `black pan`, and `sauron lord` all work
+- Color identity pips next to every result
+- Art comes from the newest *standard* printing: no promos, showcase, extended-art, or etched versions
+- Each seat remembers its commander on your device, and **Log Game** records who played what
+- Search works offline. The art itself needs internet, and without it the seat keeps its land background
+- **Use land background** switches back anytime
+
+## 👑 Monarch
+A crown button sits next to **I'm Dead** on every player card.
+
+- Tap to crown a player: their card gets a gold border and a gold crown
+- Only one monarch at a time, so crowning someone takes it from whoever had it
+- An eliminated monarch loses the crown. Tap it onto the new monarch
+- Match history marks the game's final monarch with ♛
+
+## 💰 Commander tax
+Each player now has a **Tax** counter beside their commander.
+
+- Counts in steps of 2, so the number is exactly the extra mana the next cast costs
+- Turns amber once a player has tax, and can't go below 0
+- Resets with the game and is saved in match history
+
+## Also in this release
+- Match history now shows each player's commander, the monarch, and commander tax
+- Player names in match history are now displayed safely, so special characters can't break the page
+- On phones in 4-player mode, the commander button and tax counter stack so neither gets cut off
+- New `tools/update-commanders.html` rebuilds the commander list from Scryfall when new sets release
+
+## Upgrading
+Replace `index.html` and add these new files next to it:
+- `commanders.js`: the bundled commander list
+- `tools/update-commanders.html`: the list updater
+
+Your existing match history carries over. Older games simply won't show a commander, monarch, or tax.
+
+## Data format
+Each player in exported match history now includes three new fields:
+`"commander"` (name or `null`), `"isMonarch"` (true/false), and `"commanderTax"` (number).
+
+---
+*Card data and art via [Scryfall](https://scryfall.com). Card art © Wizards of the Coast, credited to each artist. Unofficial fan content under the Wizards of the Coast Fan Content Policy.*
